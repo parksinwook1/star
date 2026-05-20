@@ -21,6 +21,70 @@
       flex-direction: column;
     }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+
+    header {
+      width: 100%;
+      height: 100vh;
+      background: radial-gradient(circle at top, #10183a, #050816 70%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .start-screen {
+      text-align: center;
+    }
+
+    .start-screen h1 {
+      font-size: 52px;
+      color: #ffe082;
+      margin-bottom: 20px;
+    }
+
+    .start-screen p {
+      font-size: 22px;
+      margin-bottom: 30px;
+      color: #cfd8dc;
+    }
+
+    .control-card {
+      background: rgba(255,255,255,0.08);
+      padding: 25px;
+      border-radius: 20px;
+      min-width: 240px;
+    }
+
+    .control-card label {
+      font-size: 22px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 15px;
+    }
+
+    .simulation-screen {
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .stage-title {
+      position: absolute;
+      top: 30px;
+      width: 100%;
+      text-align: center;
+      font-size: 42px;
+      font-weight: bold;
+      color: #fff59d;
+      z-index: 10;
+    }
+
     header {
       height: 15%;
       background: rgba(0,0,0,0.5);
@@ -150,6 +214,13 @@
     }
 
     .info-box {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 18px;
+      line-height: 1.9;
+      min-height: 140px;
+      font-size: 22px;
+      font-weight: 500;
       background: rgba(255,255,255,0.08);
       padding: 12px;
       border-radius: 12px;
@@ -164,6 +235,15 @@
     }
 
     button {
+      padding: 16px 34px;
+      border: none;
+      border-radius: 14px;
+      background: #3949ab;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
       padding: 12px 24px;
       border: none;
       border-radius: 12px;
@@ -180,6 +260,11 @@
     }
 
     .status {
+      margin-top: 10px;
+      color: #90caf9;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
       margin-top: 5px;
       color: #90caf9;
       font-size: 15px;
@@ -188,32 +273,40 @@
 </head>
 <body>
 
-  <header>
-    <h1>🌌 별의 진화 시뮬레이션 앱</h1>
+  <header id="startScreen">
+    <div class="start-screen">
+      <h1>🌌 별의 진화 시뮬레이션 앱</h1>
+      <p>별의 질량과 크기를 선택하고 우주의 진화를 탐험해보세요!</p>
 
-    <div class="control-box">
-      <div>
-        <label>별의 질량 선택</label><br>
-        <select id="massSelect">
-          <option value="small">작은 질량의 별</option>
-          <option value="large">큰 질량의 별</option>
-        </select>
+      <div class="control-box">
+        <div class="control-card">
+          <label>⭐ 별의 질량</label>
+          <select id="massSelect">
+            <option value="small">작은 질량의 별</option>
+            <option value="large">큰 질량의 별</option>
+          </select>
+        </div>
+
+        <div class="control-card">
+          <label>🌠 별의 크기</label>
+          <select id="sizeSelect">
+            <option value="small">작음</option>
+            <option value="medium">보통</option>
+            <option value="large">큼</option>
+          </select>
+        </div>
       </div>
 
-      <div>
-        <label>별의 크기 선택</label><br>
-        <select id="sizeSelect">
-          <option value="small">작음</option>
-          <option value="medium">보통</option>
-          <option value="large">큼</option>
-        </select>
-      </div>
+      <button onclick="startSimulation()">🚀 시뮬레이션 시작</button>
     </div>
   </header>
+
+  <div class="simulation-screen" id="simulationScreen">
 
   <main>
     <div class="space">
       <div class="stars"></div>
+        <div class="stage-title" id="stageTitle">☁️ 성운 단계</div>
       <div class="star nebula" id="star"></div>
     </div>
   </main>
@@ -232,13 +325,24 @@
       <button onclick="resetSimulation()">🔄 다시보기</button>
     </div>
   </footer>
+  </div>
 
   <audio id="spaceSound" loop>
     <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7a7e57f6d9.mp3?filename=space-ambient-110997.mp3" type="audio/mpeg">
   </audio>
 
+  <audio id="boomSound">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_7d6a98d12d.mp3?filename=explosion-6055.mp3" type="audio/mpeg">
+  </audio>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7a7e57f6d9.mp3?filename=space-ambient-110997.mp3" type="audio/mpeg">
+  </audio>
+
   <script>
+    const startScreen = document.getElementById('startScreen');
+    const simulationScreen = document.getElementById('simulationScreen');
     const star = document.getElementById('star');
+    const stageTitle = document.getElementById('stageTitle');
+    const boomSound = document.getElementById('boomSound');
     const infoBox = document.getElementById('infoBox');
     const statusBox = document.getElementById('statusBox');
     const massSelect = document.getElementById('massSelect');
@@ -257,10 +361,17 @@
       currentTimeouts = [];
     }
 
+    function startSimulation() {
+      startScreen.style.display = 'none';
+      simulationScreen.style.display = 'flex';
+      startEvolution();
+    }
+
     function startEvolution() {
       clearTimers();
 
       sound.play();
+      stageTitle.innerHTML = '☁️ 성운 단계';
 
       const mass = massSelect.value;
       const size = sizeSelect.value;
@@ -276,7 +387,7 @@
       // 성운 단계
       star.className = 'star nebula';
       updateInfo(
-        '☁️ 성운 단계: 우주 먼지와 가스가 모여 새로운 별이 만들어지는 단계입니다.',
+        '☁️ 성운 단계: 우주 공간의 먼지와 가스가 중력에 의해 모여 거대한 성운을 형성합니다. 중심부의 압력과 온도가 계속 높아지며 새로운 별이 태어날 준비를 합니다.',
         '낮음',
         '약함',
         '매우 큼'
@@ -284,9 +395,10 @@
 
       currentTimeouts.push(setTimeout(() => {
         // 주계열성
+        stageTitle.innerHTML = '⭐ 주계열성 단계';
         star.className = 'star main-sequence';
         updateInfo(
-          '⭐ 주계열성 단계: 수소 핵융합이 활발히 일어나 안정적으로 빛을 냅니다.',
+          '⭐ 주계열성 단계: 중심부에서 수소 핵융합이 활발하게 일어나 막대한 에너지를 방출합니다. 태양도 현재 이 단계에 속하며 가장 오랜 시간 유지됩니다.',
           '약 5,500°C',
           '강함',
           '안정적'
@@ -295,9 +407,10 @@
 
       currentTimeouts.push(setTimeout(() => {
         // 적색거성
+        stageTitle.innerHTML = '🔴 적색거성 단계';
         star.className = 'star red-giant';
         updateInfo(
-          '🔴 적색거성 단계: 중심부 수소가 줄어들며 별이 크게 팽창합니다.',
+          '🔴 적색거성 단계: 중심부 수소가 대부분 소모되면서 별이 크게 팽창합니다. 표면 온도는 낮아져 붉은색을 띠게 됩니다.',
           '약 3,500°C',
           '매우 강함',
           '매우 큼'
@@ -307,9 +420,11 @@
       if (mass === 'large') {
         currentTimeouts.push(setTimeout(() => {
           // 초신성
+          stageTitle.innerHTML = '💥 초신성 단계';
+          boomSound.play();
           star.className = 'star supernova';
           updateInfo(
-            '💥 초신성 단계: 거대한 폭발과 함께 엄청난 에너지를 방출합니다.',
+            '💥 초신성 단계: 큰 질량의 별은 마지막 순간 엄청난 폭발을 일으킵니다. 강력한 에너지와 빛이 우주 전체로 퍼져나갑니다.',
             '수백만°C',
             '폭발적',
             '급격히 팽창'
@@ -318,21 +433,38 @@
 
         currentTimeouts.push(setTimeout(() => {
           // 블랙홀
+          stageTitle.innerHTML = '🕳️ 블랙홀 단계';
           star.className = 'star black-hole';
           updateInfo(
-            '🕳️ 블랙홀 단계: 중력이 매우 강해 빛조차 빠져나올 수 없습니다.',
+            '🕳️ 블랙홀 단계: 폭발 이후 남은 중심핵의 질량이 매우 크면 블랙홀이 형성됩니다. 빛조차 빠져나오지 못할 정도로 강한 중력을 가집니다.',
             '측정 불가',
             '빛 없음',
             '매우 작음'
           );
         }, 16000));
 
+        currentTimeouts.push(setTimeout(() => {
+          stageTitle.innerHTML = '✅ 시뮬레이션 종료';
+          infoBox.innerHTML = '별의 진화 과정이 모두 종료되었습니다.';
+
+          setTimeout(() => {
+            const retry = confirm('처음 선택 화면으로 돌아가시겠습니까?');
+
+            if (retry) {
+              resetSimulation();
+            } else {
+              document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:black;color:white;font-size:40px;">프로그램이 종료되었습니다.</div>';
+            }
+          }, 2000);
+        }, 19000));
+
       } else {
         currentTimeouts.push(setTimeout(() => {
           // 백색왜성
+          stageTitle.innerHTML = '⚪ 백색왜성 단계';
           star.className = 'star white-dwarf';
           updateInfo(
-            '⚪ 백색왜성 단계: 작은 질량의 별이 마지막에 남기는 뜨거운 핵입니다.',
+            '⚪ 백색왜성 단계: 작은 질량의 별은 외곽층을 방출한 뒤 뜨거운 중심핵만 남게 됩니다. 크기는 작지만 매우 높은 온도를 유지합니다.',
             '약 100,000°C',
             '약함',
             '매우 작음'
@@ -342,6 +474,8 @@
     }
 
     function resetSimulation() {
+      startScreen.style.display = 'flex';
+      simulationScreen.style.display = 'none';
       clearTimers();
       star.className = 'star nebula';
       star.style.transform = 'translate(-50%, -50%) scale(1)';
