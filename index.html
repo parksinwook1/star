@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>별의 진화 시뮬레이션 앱</title>
   <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
     * {
       margin: 0;
       padding: 0;
@@ -22,34 +26,68 @@
     }
 
     header {
-      height: 15%;
-      background: rgba(0,0,0,0.5);
-      border-bottom: 2px solid rgba(255,255,255,0.1);
+      height: 100%;
+      background: radial-gradient(circle at top, #10183a, #050816 70%);
       display: flex;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      justify-content: space-around;
-      padding: 10px;
-      backdrop-filter: blur(10px);
+      gap: 30px;
     }
 
-    header h1 {
-      font-size: 28px;
+    .start-screen {
+      text-align: center;
+    }
+
+    .start-screen h1 {
+      font-size: 52px;
       color: #ffe082;
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(255,255,255,0.5);
+    }
+
+    .start-screen p {
+      font-size: 22px;
+      color: #cfd8dc;
+      margin-bottom: 30px;
     }
 
     .control-box {
       display: flex;
-      gap: 20px;
-      align-items: center;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .control-card {
+      background: rgba(255,255,255,0.08);
+      padding: 25px;
+      border-radius: 20px;
+      min-width: 240px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    }
+
+    .control-card label {
+      font-size: 22px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 15px;
     }
 
     select {
-      padding: 10px;
-      border-radius: 10px;
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
       border: none;
       background: #1e2a5c;
       color: white;
-      font-size: 16px;
+      font-size: 18px;
+    }
+
+    .simulation-screen {
+      display: none;
+      flex-direction: column;
+      height: 100%;
     }
 
     main {
@@ -78,65 +116,16 @@
       animation: twinkle 4s infinite alternate;
     }
 
-    @keyframes twinkle {
-      from { opacity: 0.3; }
-      to { opacity: 0.7; }
-    }
-
-    .star {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
+    .stage-title {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: orange;
-      box-shadow: 0 0 50px orange;
-      transition: all 2s ease;
-    }
-
-    .nebula {
-      background: radial-gradient(circle, rgba(173,216,230,0.9), rgba(100,100,255,0.2));
-      box-shadow: 0 0 80px rgba(173,216,230,0.7);
-      width: 180px;
-      height: 180px;
-    }
-
-    .main-sequence {
-      background: #ffd54f;
-      box-shadow: 0 0 70px #ffd54f;
-      width: 120px;
-      height: 120px;
-    }
-
-    .red-giant {
-      background: #ff7043;
-      box-shadow: 0 0 120px #ff7043;
-      width: 220px;
-      height: 220px;
-    }
-
-    .supernova {
-      background: white;
-      box-shadow: 0 0 200px white;
-      width: 300px;
-      height: 300px;
-    }
-
-    .white-dwarf {
-      background: #e0f7fa;
-      box-shadow: 0 0 40px #e0f7fa;
-      width: 70px;
-      height: 70px;
-    }
-
-    .black-hole {
-      background: black;
-      border: 4px solid purple;
-      box-shadow: 0 0 100px purple;
-      width: 90px;
-      height: 90px;
+      top: 30px;
+      width: 100%;
+      text-align: center;
+      font-size: 42px;
+      font-weight: bold;
+      color: #fff59d;
+      text-shadow: 0 0 15px rgba(255,255,255,0.8);
+      z-index: 10;
     }
 
     footer {
@@ -150,64 +139,26 @@
     }
 
     .info-box {
-      background: rgba(255,255,255,0.08);
-      padding: 12px;
-      border-radius: 12px;
-      line-height: 1.7;
-      min-height: 90px;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-    }
-
-    button {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 12px;
-      background: #3949ab;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #5c6bc0;
-      transform: scale(1.05);
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 18px;
+      line-height: 1.9;
+      min-height: 140px;
+      font-size: 22px;
+      font-weight: 500;
     }
 
     .status {
-      margin-top: 5px;
-      color: #90caf9;
-      font-size: 15px;
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <h1>🌌 별의 진화 시뮬레이션 앱</h1>
-
-    <div class="control-box">
-      <div>
-        <label>별의 질량 선택</label><br>
-        <select id="massSelect">
-          <option value="small">작은 질량의 별</option>
-          <option value="large">큰 질량의 별</option>
-        </select>
-      </div>
-
-      <div>
-        <label>별의 크기 선택</label><br>
-        <select id="sizeSelect">
-          <option value="small">작음</option>
-          <option value="medium">보통</option>
-          <option value="large">큼</option>
-        </select>
-      </div>
+      margin-top: 10px;
+      colobutton {
+      padding: 16px 34px;
+      border: none;
+      border-radius: 14px;
+      background: #3949ab;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: poinv>
     </div>
   </header>
 
