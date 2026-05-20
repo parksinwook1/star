@@ -204,7 +204,7 @@
     }
 
     footer {
-      height: 22%;
+      height: 30%;
       background: rgba(0,0,0,0.6);
       border-top: 2px solid rgba(255,255,255,0.1);
       padding: 15px;
@@ -214,6 +214,10 @@
     }
 
     .info-box {
+      font-size: 28px;
+      line-height: 2.1;
+      padding: 28px;
+      min-height: 180px;
       background: rgba(255,255,255,0.1);
       padding: 20px;
       border-radius: 18px;
@@ -229,6 +233,7 @@
     }
 
     .buttons {
+      margin-top: 15px;
       display: flex;
       gap: 15px;
       justify-content: center;
@@ -297,7 +302,7 @@
         </div>
       </div>
 
-      <button onclick="startSimulation()">🚀 시뮬레이션 시작</button>
+      <button onclick="startSimulation()" style="font-size:32px;padding:24px 60px;border-radius:20px;box-shadow:0 0 25px rgba(255,255,255,0.4);margin-top:30px;">🌌 시뮬레이션 시작</button>
     </div>
   </header>
 
@@ -321,8 +326,7 @@
     </div>
 
     <div class="buttons">
-      <button onclick="startEvolution()">▶ 시작</button>
-      <button onclick="resetSimulation()">🔄 다시보기</button>
+      <button onclick="resetSimulation()" style="font-size:26px;padding:18px 50px;">🔄 다시보기</button>
     </div>
   </footer>
   </div>
